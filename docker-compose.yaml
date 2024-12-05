@@ -5,5 +5,40 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - ./application/app:/usr/src/app/app
-    
+      - ./frontend/src:/usr/src/app/src
+  user-service:
+    build: ./user-service
+    restart: always
+    volumes:
+      - ./user-service/src:/usr/src/app/src
+    ports:
+      - 4000:80
+    secrets:
+      - mongo-db-username
+      - mongo-db-password
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: /run/secrets/mongo-db-username
+      MONGO_INITDB_ROOT_PASSWORD: /run/secrets/mongo-db-password
+    secrets:
+      - mongo-db-username
+      - mongo-db-password
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8082:8081
+    environment:
+      # ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      # ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      # ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+      ME_CONFIG_BASICAUTH: true
+
+secrets:
+  mongo-db-username:
+    file: ./secrets/mongo-db-username
+  mongo-db-password:
+    file: ./secrets/mongo-db-password
