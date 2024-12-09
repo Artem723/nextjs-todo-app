@@ -24,7 +24,21 @@ services:
     secrets:
       - user-mongodb-username
       - user-mongodb-password
-
+    user-service:
+      build: ./user-service
+      restart: always
+      environment:
+        DB_HOST: mongo
+        DB_PORT: 27017
+        DB_USERNAME_FILE: /run/secrets/mongo-db-username
+        DB_PASSWORD_FILE: /run/secrets/mongo-db-password
+      volumes:
+        - ./user-service/src:/usr/src/app/src
+      ports:
+        - 4000:80
+      secrets:
+        - mongo-db-username
+        - mongo-db-password
   # mongo-express:
   #   image: mongo-express
   #   restart: always
