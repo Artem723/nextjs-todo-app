@@ -2,9 +2,9 @@ import express from 'express'
 const app = express()
 const PORT = 80
 
-app.post('/users/add', (req, res) => {
-  throw new Error("Not implemented")
-  
+app.post('/users/register', (req, res) => {
+  throw new Error("Not implemented");
+
 })
 
 app.get('/users/getToken', (req, res) => {
