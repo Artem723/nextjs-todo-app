@@ -1,4 +1,7 @@
 import { Schema } from 'mongoose'
+import bcrypt from 'bcrypt';
+
+const SALT_ROUNDS = 10;
 
 const UserSchema = new Schema({
     name: {
@@ -12,15 +15,24 @@ const UserSchema = new Schema({
     login: {
         type: String,
         required: true,
-        lowercase: true,
         immutable: true,
-        trim: true,
         validate: {
-            validator: function(v) {
+            validator: (v) => {
                 return /^([a-z]{1})[a-z0-9]{2,30}$/.test(v)
             },
-            message: props => `${props.value} is not a valid login string: should contain lowercase latin characters and numbers and should not start from a number.`
+            message: props => `${props.value} is not a valid login string: \
+            should contain lowercase latin characters and numbers and should not start from a number.`
         }
+    },
+    email: {
+        type: String,
+        validate: {
+            validator: (v) => {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+            },
+            message: () => `${props.value} is not valid email address.`
+        },
+        required: [true, 'The email is required.']
     },
     hashedPWD: {
         type: String,
@@ -32,5 +44,19 @@ const UserSchema = new Schema({
     },
     lastLoginDate: Date
 })
+
+UserSchema.virtual('password').set(async function (plainPWD) {
+    if (!validatePlainPWD(plainPWD))
+        throw new Error("Password should be at least 6 characters long containing letters and numbers!")
+    this.hashedPWD = await bcrypt.hash(plainPWD, SALT_ROUNDS);
+})
+
+UserSchema.methods.checkPWD = function(plainPWD) {
+    
+}
+
+function validatePlainPWD(pwd) {
+    return /\w{6,30}/.test(pwd);
+}
 
 export default UserSchema;
