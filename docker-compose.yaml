@@ -1,9 +1,14 @@
 services:
+  gateway:
+    build: ./gateway
+    restart: always
+    ports:
+      - 3030:80
   frontend:
     build: ./frontend
     restart: always
-    ports:
-      - 3000:3000
+    # ports:
+    #   - 3040:3000
     volumes:
       - ./frontend/src:/usr/src/app/src
   user-service:
@@ -43,7 +48,11 @@ services:
   #     ME_CONFIG_BASICAUTH: true
 
 secrets:
-  mongo-db-username:
-    file: ./secrets/mongo-db-username
-  mongo-db-password:
-    file: ./secrets/mongo-db-password
+  user-mongodb-username:
+    file: ./secrets/user-mongodb-username 
+  user-mongodb-password:
+    file: ./secrets/user-mongodb-password
+
+volumes:
+  user-mongodb:
+    
