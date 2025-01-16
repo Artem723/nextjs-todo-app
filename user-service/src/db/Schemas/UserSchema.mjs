@@ -1,6 +1,5 @@
 import { Schema } from 'mongoose'
 import bcrypt from 'bcrypt';
-
 const SALT_ROUNDS = 10;
 
 const UserSchema = new Schema({
@@ -45,14 +44,19 @@ const UserSchema = new Schema({
     lastLoginDate: Date
 })
 
-UserSchema.virtual('password').set(async function (plainPWD) {
+UserSchema.methods.setPassword = async function (plainPWD) {
     if (!validatePlainPWD(plainPWD))
         throw new Error("Password should be at least 6 characters long containing letters and numbers!")
+    
     this.hashedPWD = await bcrypt.hash(plainPWD, SALT_ROUNDS);
-})
+}
 
 UserSchema.methods.checkPWD = function(plainPWD) {
-    
+    return bcrypt.compare(plainPWD, this.hashedPWD);
+}
+
+UserSchema.statics.findByLogin = function(login) {
+    return this.findOne()
 }
 
 function validatePlainPWD(pwd) {
