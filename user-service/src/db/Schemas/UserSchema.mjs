@@ -1,6 +1,10 @@
 import { Schema } from 'mongoose'
+import fs from 'node:fs'
+import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt';
 const SALT_ROUNDS = 10;
+
+const secretKey = fs.readFileSync('../../../secrets/private.key')
 
 const UserSchema = new Schema({
     name: {
@@ -55,9 +59,41 @@ UserSchema.methods.checkPWD = function(plainPWD) {
     return bcrypt.compare(plainPWD, this.hashedPWD);
 }
 
-UserSchema.statics.findByLogin = function(login) {
-    return this.findOne()
+UserSchema.methods.generateToken = function() {
+    return new Promise((resolve, reject) => {
+        jwt.sign({ login: this.login }, secretKey, { expiresIn: 300 }, (err, token) => {
+            if (err) reject(err);
+            resolve(token);
+        })
+    })
 }
+
+UserSchema.static.verifyAndGetUserByToken = async function(token) {
+    const decodedPromise = new Promise((resolve, reject) => {
+        jwt.verify(token, secretKey, (err, decoded) => {
+            if (err) reject(err);
+            resolve(decoded);
+        })
+    })
+    try {
+        const decoded = await decodedPromise;
+    } catch(e) {
+        console.log("Provided token is invalid!");
+        return null;
+    }
+    
+    try {
+        const user = await this.findByLogin(decoded?.login);
+    } catch(e) {
+
+    }
+}
+
+UserSchema.statics.findByLogin = function(login) {
+    return this.findOne({ login: login })
+}
+
+
 
 function validatePlainPWD(pwd) {
     return /\w{6,30}/.test(pwd);
