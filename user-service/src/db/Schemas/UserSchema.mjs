@@ -83,7 +83,7 @@ UserSchema.static.verifyAndGetUserByToken = async function(token) {
     }
     
     try {
-        const user = await this.findByLogin(decoded?.login);
+        return await this.findByLogin(decoded?.login);
     } catch(e) {
 
     }
