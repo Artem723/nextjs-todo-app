@@ -33,7 +33,7 @@ const UserSchema = new Schema({
             validator: (v) => {
                 return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
             },
-            message: () => `${props.value} is not valid email address.`
+            message: (props) => `${props.value} is not valid email address.`
         },
         required: [true, 'The email is required.']
     },
@@ -68,7 +68,19 @@ UserSchema.methods.generateToken = function() {
     })
 }
 
+UserSchema.methods.stringify = function() {
+    const responseUser = {
+        login: this.login,
+        name: this.name,
+        email: this.email,
+        creationDate: this.creationDate,
+        lastLoginDate: this.lastLoginDate
+    }
+    return JSON.stringify(responseUser);  
+}
+
 UserSchema.static.verifyAndGetUserByToken = async function(token) {
+    let decoded;
     const decodedPromise = new Promise((resolve, reject) => {
         jwt.verify(token, secretKey, (err, decoded) => {
             if (err) reject(err);
@@ -76,17 +88,13 @@ UserSchema.static.verifyAndGetUserByToken = async function(token) {
         })
     })
     try {
-        const decoded = await decodedPromise;
+        decoded = await decodedPromise;
     } catch(e) {
         console.log("Provided token is invalid!");
         return null;
     }
     
-    try {
-        return await this.findByLogin(decoded?.login);
-    } catch(e) {
-
-    }
+    return await this.findByLogin({ login: decoded?.login });
 }
 
 UserSchema.statics.findByLogin = function(login) {
