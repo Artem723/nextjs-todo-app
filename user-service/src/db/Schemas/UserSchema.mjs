@@ -3,8 +3,8 @@ import fs from 'node:fs'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt';
 const SALT_ROUNDS = 10;
-
-const secretKey = fs.readFileSync('../../../secrets/private.key')
+console.log(process.cwd())
+const secretKey = fs.readFileSync(process.env.AUTH_SECRET_KEY_FILE);
 
 const UserSchema = new Schema({
     name: {

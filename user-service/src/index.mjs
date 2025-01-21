@@ -8,7 +8,7 @@ const app = express()
 const PORT = 80
 
 app.use(bodyParser.json());
-app.use(cookieParser());
+app.use(cookieParser());  
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/users/register', async (req, res) => {
@@ -48,12 +48,6 @@ app.get('/users/login', (req, res) => {
 
 app.get('/users/me', checkToken, (req, res) => {
   const user = req.locals.user;
-  const responseUser = {
-    login: user.login,
-    name: user.name,
-    email: user.email,
-    creationDate: user.creationDate
-  }
   res.end({ user: user.stringify() });
 })
 
