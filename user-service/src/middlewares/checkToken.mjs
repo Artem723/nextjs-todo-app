@@ -1,6 +1,6 @@
-import User from './db/Models/UserModel.mjs'
+import User from '../db/Models/UserModel.mjs'
 
-export async function checkToken(req, res, next) {
+export default async function checkToken(req, res, next) {
     const token = req.cookies?.token;
     if (!token) {
         res.status(401).end('Unauthorized.');

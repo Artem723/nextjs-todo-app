@@ -15,4 +15,5 @@ const dbPassword = readFileSync(DB_PASSWORD_FILE, 'utf-8');
 
 mongoose.connect(`mongodb://${dbUsername}:${dbPassword}@${DB_HOST}:${DB_PORT}`)
 
+
 export default mongoose;

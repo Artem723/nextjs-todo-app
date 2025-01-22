@@ -79,7 +79,7 @@ UserSchema.methods.stringify = function() {
     return JSON.stringify(responseUser);  
 }
 
-UserSchema.static.verifyAndGetUserByToken = async function(token) {
+UserSchema.statics.verifyAndGetUserByToken = async function(token) {
     let decoded;
     const decodedPromise = new Promise((resolve, reject) => {
         jwt.verify(token, secretKey, (err, decoded) => {
