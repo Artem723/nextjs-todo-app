@@ -94,10 +94,11 @@ UserSchema.statics.verifyAndGetUserByToken = async function(token) {
         return null;
     }
     
-    return await this.findByLogin({ login: decoded?.login });
+    return await this.findByLogin(decoded?.login);
 }
 
 UserSchema.statics.findByLogin = function(login) {
+    console.dir(login)
     return this.findOne({ login: login })
 }
 

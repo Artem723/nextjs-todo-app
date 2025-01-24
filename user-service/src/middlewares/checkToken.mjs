@@ -2,6 +2,7 @@ import User from '../db/Models/UserModel.mjs'
 
 export default async function checkToken(req, res, next) {
     const token = req.cookies?.token;
+    console.log('token: ', token)
     if (!token) {
         res.status(401).end('Unauthorized.');
         return;
@@ -12,6 +13,6 @@ export default async function checkToken(req, res, next) {
         res.status(401).end('Unauthorized.');
         return;
     }
-    req.locals.user = user;
+    res.locals.user = user;
     next();
 }

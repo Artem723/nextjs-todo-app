@@ -65,8 +65,8 @@ app.get('/users/login', async (req, res) => {
 })
 
 app.get('/users/me', checkToken, (req, res) => {
-  const user = req.locals.user;
-  res.end({ user: user.stringify() });
+  const user = res.locals.user;
+  res.end(JSON.stringify({ user: user.stringify() }));
 })
 
 app.post('/users/isAuthorized', checkToken, (req, res) => {
