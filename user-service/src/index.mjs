@@ -6,6 +6,7 @@ import checkToken from './middlewares/checkToken.mjs'
 import requestLogger from './middlewares/requestLogger.mjs'
 import mongoose from './db/connection.mjs'
 import logger from './logger/index.mjs'
+import validationMessageFlatter from './utils/validationMessageFlatter.mjs'
 
 const app = express();
 const PORT = 80;
@@ -33,6 +34,10 @@ app.post('/users/register', async (req, res) => {
     res.cookie('token', await user.generateToken(), { httpOnly: true })
     res.end('OK.');
   } catch (e) {
+    if (e.errors) {
+      res.status(400).end(`Validation error: ${JSON.stringify(validationMessageFlatter(e.errors))}`);
+      return;
+    }
     logger.error('Not possible to register a user. Internal error.')
     logger.error(e);
     res.status(500).end('Internal server error.');
