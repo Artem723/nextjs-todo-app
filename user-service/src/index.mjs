@@ -48,10 +48,10 @@ app.get('/users/login', async (req, res) => {
   console.log("Login request received");
   const login = req.body.login;
   const password = req.body.password;
-  const user = User.findByLogin(login);
+  const user = await User.findByLogin(login);
   if (!user) {
     res.status(400).end(`Error: user ${login} not found.`)
-  } else if (!user.checkPWD(password)) {
+  } else if (!(await user.checkPWD(password))) {
     res.status(400).end(`Error: password is incorrect.`)
   } else {
     res.cookie('token', await user.generateToken(), { httpOnly: true })
