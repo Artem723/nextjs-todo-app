@@ -1,3 +1,4 @@
+import logger from '../../logger/index.mjs';
 import { Schema } from '../connection.mjs';
 import { REPEATED_ACTIVITY, STATUS } from './constants.mjs';
 
@@ -45,13 +46,38 @@ const TaskSchema = new Schema({
         type: Schema.Type.ObjectId,
         ref: 'TaskActivity'
     },
+    userLogin: {
+        type: String,
+        required: true,
+        immutable: true,
+        
+    },
+    userRef: {
+        type: Schema.Type.ObjectId,
+        required: true,
+        immutable: true,
+        
+    }
     // isCompleted: {
         // The completion can be in status
     // }
 },{
     timestamps: true
 })
- 
+
+TaskSchema.statics.getTaskByIdForUser = async function(taskId, userId) {
+    if (!taskId || !userId) {
+        logger.error("The arguments 'taskId' and/or 'userId' were not specified.")
+        return null;
+    }
+    const task = await this.findById(taskId);
+    if (task?.userRef !== userId) {
+        logger.info(`Task with ${taskId} was not found for user ${userId}.`);
+        return null;
+    }
+    return task;
+}
+
 export default TaskSchema;
 
 // UserSchema.methods.setPassword = async function (plainPWD) {

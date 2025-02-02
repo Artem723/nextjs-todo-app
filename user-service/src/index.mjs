@@ -8,7 +8,7 @@ import mongoose from './db/connection.mjs'
 import logger from './logger/index.mjs'
 import validationMessageFlatter from './utils/validationMessageFlatter.mjs'
 
-const app = express();
+export const app = express();
 const PORT = 80;
 
 app.use(bodyParser.json());

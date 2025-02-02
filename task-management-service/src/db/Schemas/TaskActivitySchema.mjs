@@ -26,6 +26,18 @@ const TaskActivitySchema = new Schema({
     },
     updatedAt: { //TODO: check, mb redundant
         type: Date,
+    },
+    userLogin: {
+        type: String,
+        required: true,
+        immutable: true,
+        
+    },
+    userRef: {
+        type: Schema.Type.ObjectId,
+        required: true,
+        immutable: true,
+        
     }
 }, {
     timestamps: true
