@@ -9,9 +9,6 @@ const TaskSchema = new Schema({
         minLength: 2,
         maxLength: 30
     },
-    // taskType: {
-    // repeated activity if not null then scheduled
-    // },
     status: {
         type: String,
         enum: STATUS
@@ -51,7 +48,11 @@ const TaskSchema = new Schema({
     // isCompleted: {
         // The completion can be in status
     // }
+},{
+    timestamps: true
 })
+ 
+export default TaskSchema;
 
 // UserSchema.methods.setPassword = async function (plainPWD) {
 //     if (!validatePlainPWD(plainPWD))
