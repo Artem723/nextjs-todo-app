@@ -61,7 +61,7 @@ UserSchema.methods.checkPWD = function(plainPWD) {
 
 UserSchema.methods.generateToken = function() {
     return new Promise((resolve, reject) => {
-        jwt.sign({ login: this.login }, secretKey, { expiresIn: "7d" }, (err, token) => {
+        jwt.sign({ login: this.login, id: this._id }, secretKey, { expiresIn: "7d" }, (err, token) => {
             if (err) reject(err);
             resolve(token);
         })
