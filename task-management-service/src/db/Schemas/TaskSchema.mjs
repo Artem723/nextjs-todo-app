@@ -1,6 +1,6 @@
 import logger from '../../logger/index.mjs';
 import { Schema } from '../connection.mjs';
-import { REPEATED_ACTIVITY, STATUS } from './constants.mjs';
+import { REPEATED_ACTIVITY, STATUS, STATUS_OPEN } from './constants.mjs';
 
 const TaskSchema = new Schema({
     title: {
@@ -12,7 +12,9 @@ const TaskSchema = new Schema({
     },
     status: {
         type: String,
-        enum: STATUS
+        enum: STATUS,
+        required: true,
+        default: STATUS_OPEN
     },
     color: {
         type: String,
@@ -22,7 +24,7 @@ const TaskSchema = new Schema({
             },
             message: props => `${props.value} is not valid HTML color.`
         },
-        default: "#d804ca"
+        default: TASK_COLOR_DEFAULT
     },
     notes: {
         type: String,
@@ -38,6 +40,7 @@ const TaskSchema = new Schema({
     },
     createdAt: {
         type: Date,
+        default: Date.now
     },
     statusChangedAt: {
         type: Date,
@@ -46,12 +49,12 @@ const TaskSchema = new Schema({
         type: Schema.Type.ObjectId,
         ref: 'TaskActivity'
     },
-    userLogin: {
-        type: String,
-        required: true,
-        immutable: true,
-        
-    },
+    // userLogin: {
+    //     type: String,
+    //     required: true,
+    //     immutable: true,
+        // some user fields if needed
+    // },
     userRef: {
         type: Schema.Type.ObjectId,
         required: true,

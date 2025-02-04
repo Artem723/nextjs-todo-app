@@ -10,11 +10,17 @@ export function placeUserData(req, res, next) {
     let payload = null;
     try {
         payload = JSON.parse(atob(token.split('.')[0]));
+        if (!payload.id) {
+            logger.error(`JWT payload doesn't contain user ID. payload: ${JSON.stringify(payload)}`);
+            res.status(401).end("Unauthorized!");
+            return;
+        }
+        res.locals.userID = payload.id;
+        next();    
     } catch(e) {
         logger.error(e);
         logger.error(`Cannot parse the JWT payload: ${token.split('.')[0]}`)
+        res.status(401).end("Unauthorized.");
         return;
     }
-    res.locals.userID = payload.id;
-    next();
 }
