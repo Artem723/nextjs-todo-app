@@ -1,6 +1,7 @@
 import logger from '../../logger/index.mjs';
 import { Schema } from '../connection.mjs';
 import { REPEATED_ACTIVITY, STATUS, STATUS_OPEN } from './constants.mjs';
+import TaskFiltersValModel from '../Models/TaskFiltersValModel.mjs';
 
 const TaskSchema = new Schema({
     title: {
@@ -8,7 +9,8 @@ const TaskSchema = new Schema({
         required: true,
         trim: true,
         minLength: 2,
-        maxLength: 30
+        maxLength: 30,
+        text: true
     },
     status: {
         type: String,
@@ -38,10 +40,6 @@ const TaskSchema = new Schema({
     completeBy: {
         type: Date
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
     statusChangedAt: {
         type: Date,
     },
@@ -68,7 +66,9 @@ const TaskSchema = new Schema({
     timestamps: true
 })
 
-TaskSchema.statics.getTaskByIdForUser = async function(taskId, userId) {
+TaskSchema.path('title').index({text: true});
+
+TaskSchema.statics.getOneTaskByIdAndUserId = async function(taskId, userId) {
     if (!taskId || !userId) {
         logger.error("The arguments 'taskId' and/or 'userId' were not specified.")
         return null;
@@ -79,6 +79,45 @@ TaskSchema.statics.getTaskByIdForUser = async function(taskId, userId) {
         return null;
     }
     return task;
+}
+
+TaskSchema.statics.getTasksByUserId = async function(userId, filters) {
+    /**
+     * title
+     * limit
+     * fromTime
+     * toTime
+     * status
+     */
+    
+    const varErrors = await validateTaskFilters(filters);
+    if (varErrors) return [varErrors.message, null];
+    
+    if (filters?.title) query = query.where({'$text': {'$search': filters.title}});
+    if (filters?.limit) query = query.limit(filters.limit);
+    if (filters?.fromTime) query = query.where('createdAt').gt(filters.fromTime);
+    if (filters?.toTime) query = query.where('createdAt').lt(filters.toTime);
+    if (filters?.status) query = query.where('status').eq(filters.status);
+
+    try {
+        const tasks = await query.exec();
+    } catch(e) {
+        logger.error(`Cannot query tasks for userId ${userId}, filters: ${filters}`);
+        logger.error(e);
+        return [err.message, null]
+    }
+    return [null ,tasks];
+}
+
+async function validateTaskFilters(filters) {
+    try {
+        const taskFilters = new TaskFiltersValModel(filters)
+        await taskFilters.validate();
+        return null;
+    } catch(err) {
+        logger.debug(`Validation of the instance failed ${err.message}`)
+        return err;
+    }
 }
 
 export default TaskSchema;
