@@ -39,7 +39,8 @@ app.post('/tasks', placeUserData, async (req, res) => {
 // TODO add query by date
 app.get('/tasks', placeUserData, (req, res) => {
     const { userId } = res.locals;
-    const tasks = TaskModel.find({})
+    // parse the querystring
+    const tasks = TaskModel.getTasksByUserId(userId);
     throw new Error('Not implemented!');
 })
 

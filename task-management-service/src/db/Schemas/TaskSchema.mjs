@@ -82,13 +82,6 @@ TaskSchema.statics.getOneTaskByIdAndUserId = async function(taskId, userId) {
 }
 
 TaskSchema.statics.getTasksByUserId = async function(userId, filters) {
-    /**
-     * title
-     * limit
-     * fromTime
-     * toTime
-     * status
-     */
     
     const varErrors = await validateTaskFilters(filters);
     if (varErrors) return [varErrors.message, null];
