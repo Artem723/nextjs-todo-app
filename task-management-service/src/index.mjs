@@ -81,7 +81,8 @@ app.get('/tasks/:id', placeUserData, async (req, res) => {
 })
 
 app.get('/tasks/:id/activity', (req, res) => {
-    throw new Error('Not implemented!');
+    const { userId } = res.locals;
+    const taskId = req.params.id;
 })
 
 app.patch('/task/:id', placeUserData, (req, res) => {
