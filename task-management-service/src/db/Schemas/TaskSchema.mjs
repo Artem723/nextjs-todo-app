@@ -70,21 +70,32 @@ TaskSchema.path('title').index({text: true});
 
 TaskSchema.statics.getOneTaskByIdAndUserId = async function(taskId, userId) {
     if (!taskId || !userId) {
-        logger.error("The arguments 'taskId' and/or 'userId' were not specified.")
+        logger.debug("The arguments 'taskId' and/or 'userId' were not specified.")
         return null;
     }
     const task = await this.findById(taskId);
     if (task?.userRef !== userId) {
-        logger.info(`Task with ${taskId} was not found for user ${userId}.`);
+        logger.debug(`Task with ${taskId} was not found for user ${userId}.`);
         return null;
     }
     return task;
 }
 
+TaskSchema.statics.deleteOneTaskByIdAndUserId = async function(taskId, userId) {
+    const task = this.getOneTaskByIdAndUserId(taskId, userId);
+    if (!task) {
+        logger.debug(`Couldn't find a document with taskId: ${taskId}; userID: ${userId} for deletion.`)
+        return null;
+    }
+    await task.deleteOne();
+    return task;
+}
+
 TaskSchema.statics.getTasksByUserId = async function(userId, filters) {
     
-    const varErrors = await validateTaskFilters(filters);
-    if (varErrors) return [varErrors.message, null];
+    
+    if (filters) await validateTaskFilters(filters);
+    let query = this.find({'userRef': userId});
     
     if (filters?.title) query = query.where({'$text': {'$search': filters.title}});
     if (filters?.limit) query = query.limit(filters.limit);
@@ -92,14 +103,9 @@ TaskSchema.statics.getTasksByUserId = async function(userId, filters) {
     if (filters?.toTime) query = query.where('createdAt').lt(filters.toTime);
     if (filters?.status) query = query.where('status').eq(filters.status);
 
-    try {
-        const tasks = await query.exec();
-    } catch(e) {
-        logger.error(`Cannot query tasks for userId ${userId}, filters: ${filters}`);
-        logger.error(e);
-        return [err.message, null]
-    }
-    return [null ,tasks];
+    
+    const tasks = await query.exec();
+    return tasks;
 }
 
 async function validateTaskFilters(filters) {

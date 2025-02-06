@@ -26,4 +26,7 @@ const TaskFiltersValSchema = new Schema({
     _id: false
 })
 
+// to prevent from saving in DB
+TaskFiltersValSchema.pre('save', () => {throw new Error('Not savable document.')})
+
 export default TaskFiltersValSchema;

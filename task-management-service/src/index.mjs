@@ -25,8 +25,9 @@ app.post('/tasks', placeUserData, async (req, res) => {
         await task.save();
     } catch(e) {
         if(e instanceof mongoose.Error.ValidationError) {
-            logger.error(`Task validation failed: ${e.errors}`)
+            logger.debug(`Task validation failed: ${e.errors}`)
             res.status(400).end(JSON.stringify(e.errors));
+            
         } else {
             logger.error('Not possible to save a new task to the DB');
             logger.error(e)
@@ -37,14 +38,49 @@ app.post('/tasks', placeUserData, async (req, res) => {
     res.end(JSON.stringify(task));
 })
 // TODO add query by date
-app.get('/tasks', placeUserData, (req, res) => {
+app.get('/tasks', placeUserData, async (req, res) => {
     const { userId } = res.locals;
-    // parse the querystring
-    const tasks = TaskModel.getTasksByUserId(userId);
-    throw new Error('Not implemented!');
+    try {
+        const tasks = await TaskModel.getTasksByUserId(userId, req.query);
+        res.end(JSON.stringify(tasks));
+        return;
+    } catch(err) {
+        if (err instanceof mongoose.Error.ValidationError) {
+            logger.debug(`Request is invalid: ${e.errors}`)
+            res.status(400).end(err.message);
+            return;
+        } else {
+            logger.error(`Internal error: ${err.message}`)
+            logger.error(err);
+            res.status(500).end('Internal Error.')
+            return;
+        }
+    }
 })
 
-app.get('/tasks/:id', placeUserData, (req, res) => {
+
+
+app.get('/tasks/:id', placeUserData, async (req, res) => {
+    const { userId } = res.locals;
+    const taskId = req.params.id;
+    let task = null;
+    try {
+        task = await task.getOneTaskByIdAndUserId(taskId, userId);
+    } catch (e) {
+        logger.error(`Cannot retrieve task from DB. userId: ${userId}; taskId: ${taskId} `)
+        res.status(500).end('Internal error.');
+        return;
+    }
+    
+    if (!task) {
+        res.status(400).end('Bad request.');
+        
+    } else {
+        res.end(JSON.stringify(task));
+    } 
+})
+
+app.get('/tasks/:id/activity', (req, res) => {
     throw new Error('Not implemented!');
 })
 
