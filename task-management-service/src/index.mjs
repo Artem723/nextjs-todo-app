@@ -88,6 +88,22 @@ app.patch('/task/:id', placeUserData, (req, res) => {
     throw new Error('Not implemented!');
 })
 
-app.delete('/task/:id', placeUserData, (req, res) => {
-    throw new Error('Not implemented!');
+app.delete('/task/:id', placeUserData, async (req, res) => {
+    const { userId } = res.locals;
+    const taskId = req.params.id;
+    let task = null;
+    try {
+        task = await task.deleteOneTaskByIdAndUserId(taskId, userId);
+    } catch (e) {
+        logger.error(`Cannot delete task from DB. userId: ${userId}; taskId: ${taskId} `)
+        res.status(500).end('Internal error.');
+        return;
+    }
+    
+    if (!task) {
+        res.status(400).end('Bad request.');
+        
+    } else {
+        res.end(JSON.stringify(task));
+    } 
 })
