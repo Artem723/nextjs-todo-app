@@ -1,6 +1,7 @@
 import { Schema } from '../connection.mjs';
 import { STATUS } from './constants.mjs';
 import logger from '../../logger/index.mjs';
+import TaskModel from '../Models/TaskModel.mjs'
 
 const DEFAULT_HISTORY_IN_DAYS = 30;
 
@@ -31,37 +32,35 @@ const TaskActivitySchema = new Schema({
         type: String,
         required: true,
         immutable: true,
-        
+
     },
     userRef: {
         type: Schema.Type.ObjectId,
         required: true,
         immutable: true,
-        
+
     }
 }, {
     timestamps: true
 })
 
 // Get activity list for a task.
-TaskActivitySchema.static.getActivityListForTaskId = async function(taskId, periodMills) {
+TaskActivitySchema.statics.getActivityListForTaskId = async function (taskId, userId, periodMills) {
     if (!taskId) {
         logger.error("Task ID was not specified.");
         return null;
     }
+    const task = await TaskModel.getOneTaskByIdAndUserId(taskId, userId);
+    if (!task) return null;
 
     periodMills = periodMills || createDurationOfDays(DEFAULT_HISTORY_IN_DAYS);
     const fromTime = new Date.now() - periodMills;
-    
-    try {
-        const activities = await this.find({
-            taskRef: taskId,
-            performedAt: {$gte: fromTime}
-        }).exec();
-        return activities;
-    } catch(e) {
-        logger.error(`Couldn't extract activities`)
-    }
+
+    const activities = await this.find({
+        taskRef: taskId,
+        performedAt: { $gte: fromTime }
+    }).exec();
+    return activities;
 }
 
 function createDurationOfDays(days) {

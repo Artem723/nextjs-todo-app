@@ -3,6 +3,7 @@ import logger from './logger/index.mjs';
 import { placeUserData } from './middlewares.mjs';
 import cookieParser from 'cookie-parser';
 import TaskModel from './db/Models/TaskModel.mjs'
+import TaskActivityModel from './db/Models/TaskActivityModel.mjs'
 import { TASK_COLOR_DEFAULT } from './db/Schemas/constants.mjs';
 import mongoose from './db/connection.mjs';
 
@@ -37,7 +38,6 @@ app.post('/tasks', placeUserData, async (req, res) => {
     }
     res.end(JSON.stringify(task));
 })
-// TODO add query by date
 app.get('/tasks', placeUserData, async (req, res) => {
     const { userId } = res.locals;
     try {
@@ -73,16 +73,25 @@ app.get('/tasks/:id', placeUserData, async (req, res) => {
     }
     
     if (!task) {
-        res.status(400).end('Bad request.');
+        res.status(404).end('Not Found.');
         
     } else {
         res.end(JSON.stringify(task));
     } 
 })
 
-app.get('/tasks/:id/activity', (req, res) => {
+app.get('/tasks/:id/activity', async (req, res) => {
     const { userId } = res.locals;
     const taskId = req.params.id;
+
+    try {
+        const activities = await TaskActivityModel.getActivityListForTaskId(taskId);
+        res.end(JSON.stringify(activities))
+    } catch (err) {
+        logger.error('Error retrieving activities from the database');
+        logger.error(err)
+        res.status(500).end('Internal Server Error');
+    }
 })
 
 app.patch('/task/:id', placeUserData, (req, res) => {

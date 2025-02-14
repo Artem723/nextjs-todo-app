@@ -104,7 +104,7 @@ TaskSchema.statics.getTasksByUserId = async function(userId, filters) {
     if (filters?.status) query = query.where('status').eq(filters.status);
 
     
-    const tasks = await query.exec();
+    const tasks = query.exec();
     return tasks;
 }
 
