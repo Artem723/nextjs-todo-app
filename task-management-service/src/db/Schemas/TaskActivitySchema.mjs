@@ -3,7 +3,7 @@ import { STATUS } from './constants.mjs';
 import logger from '../../logger/index.mjs';
 import TaskModel from '../Models/TaskModel.mjs'
 
-const DEFAULT_HISTORY_IN_DAYS = 30;
+
 
 const TaskActivitySchema = new Schema({
     taskRef: {
@@ -44,8 +44,10 @@ const TaskActivitySchema = new Schema({
     timestamps: true
 })
 
+
+
 // Get activity list for a task.
-TaskActivitySchema.statics.getActivityListForTaskId = async function (taskId, userId, periodMills) {
+TaskActivitySchema.statics.getActivityListForTaskId = async function (taskId, userId, filters) {
     if (!taskId) {
         logger.error("Task ID was not specified.");
         return null;
@@ -63,9 +65,6 @@ TaskActivitySchema.statics.getActivityListForTaskId = async function (taskId, us
     return activities;
 }
 
-function createDurationOfDays(days) {
-    // Millis * sec * min * hours * days
-    return 1000 * 60 * 60 * 24 * days;
-}
+
 
 export default TaskActivitySchema;

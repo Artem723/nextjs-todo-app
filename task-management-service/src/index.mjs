@@ -85,7 +85,7 @@ app.get('/tasks/:id/activity', async (req, res) => {
     const taskId = req.params.id;
 
     try {
-        const activities = await TaskActivityModel.getActivityListForTaskId(taskId);
+        const activities = await TaskActivityModel.getActivityListForTaskId(taskId, userId, req.query);
         res.end(JSON.stringify(activities))
     } catch (err) {
         logger.error('Error retrieving activities from the database');
