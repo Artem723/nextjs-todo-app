@@ -1,6 +1,6 @@
 import mongoose from "../connection.mjs";
 import TaskSchema from "../Schemas/TaskSchema.mjs";
 
-const model = mongoose.model('Task', TaskSchema);
+const Task = mongoose.model('Task', TaskSchema);
 
-export default model;
+export default Task;

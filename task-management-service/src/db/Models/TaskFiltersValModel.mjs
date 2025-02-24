@@ -1,6 +1,6 @@
 import mongoose from "../connection.mjs";
 import TaskFiltersValSchema from "../Schemas/TaskFiltersValSchema.mjs";
 
-const model = mongoose.model('TaskActivity', TaskFiltersValSchema);
+const TaskActivityVal = mongoose.model('TaskActivityVal', TaskFiltersValSchema);
 
-export default model;
+export default TaskActivityVal;

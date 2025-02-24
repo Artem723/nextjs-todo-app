@@ -1,4 +1,4 @@
-import { Schema } from '../connection.mjs';
+import { Schema } from 'mongoose';
 import { STATUS } from './constants.mjs';
 import logger from '../../logger/index.mjs';
 import TaskModel from '../Models/TaskModel.mjs'

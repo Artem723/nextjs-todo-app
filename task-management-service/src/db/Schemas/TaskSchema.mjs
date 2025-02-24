@@ -1,5 +1,5 @@
 import logger from '../../logger/index.mjs';
-import { Schema } from '../connection.mjs';
+import { Schema } from 'mongoose';
 import { REPEATED_ACTIVITY, STATUS, STATUS_OPEN } from './constants.mjs';
 import TaskFiltersValModel from '../Models/TaskFiltersValModel.mjs';
 
