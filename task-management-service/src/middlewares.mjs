@@ -24,3 +24,16 @@ export function placeUserData(req, res, next) {
         return;
     }
 }
+
+export function requestErrorHandler(err, req, res, next) {
+    if (err instanceof mongoose.Error.ValidationError) {
+        logger.debug(`Request is invalid: ${e.errors}`)
+        res.status(400).end(err.message);
+        return;
+    } else {
+        logger.error(`Internal error: ${err.message}`)
+        logger.error(err);
+        res.status(500).end('Internal Error.')
+        return;
+    }
+}

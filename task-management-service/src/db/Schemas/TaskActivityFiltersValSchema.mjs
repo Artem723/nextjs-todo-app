@@ -1,15 +1,15 @@
 import { Schema, Error } from 'mongoose';
-import { DEFAULT_ACTIVITY_HISTORY_IN_DAYS } from './constants.mjs'
+import { DEFAULT_ACTIVITY_HISTORY_IN_DAYS, STATUS } from './constants.mjs'
 
 const TaskActivityFiltersValSchema = new Schema({
-    title: {
-        type: String,
-        maxLength: 40
-    },
     limit: {
         type: Number,
         min: [1, 'The minimal number cannot be less than 1'],
         max: [200, 'The maximal number cannot be greater than 200']
+    },
+    newStatus: {
+        type: String,
+        enum: STATUS
     },
     fromTime: {
         type: Date,

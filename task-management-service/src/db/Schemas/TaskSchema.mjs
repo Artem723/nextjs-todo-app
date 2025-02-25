@@ -109,63 +109,9 @@ TaskSchema.statics.getTasksByUserId = async function(userId, filters) {
 }
 
 async function validateTaskFilters(filters) {
-    try {
-        const taskFilters = new TaskFiltersValModel(filters)
-        await taskFilters.validate();
-        return null;
-    } catch(err) {
-        logger.debug(`Validation of the instance failed ${err.message}`)
-        return err;
-    }
+    const taskFilters = new TaskFiltersValModel(filters)
+    await taskFilters.validate();
+    return null;
 }
 
 export default TaskSchema;
-
-// UserSchema.methods.setPassword = async function (plainPWD) {
-//     if (!validatePlainPWD(plainPWD))
-//         throw new Error("Password should be at least 6 characters long containing letters and numbers!")
-    
-//     this.hashedPWD = await bcrypt.hash(plainPWD, SALT_ROUNDS);
-// }
-
-// UserSchema.methods.checkPWD = function(plainPWD) {
-//     return bcrypt.compare(plainPWD, this.hashedPWD);
-// }
-
-// UserSchema.methods.generateToken = function() {
-//     return new Promise((resolve, reject) => {
-//         jwt.sign({ login: this.login }, secretKey, { expiresIn: "7d" }, (err, token) => {
-//             if (err) reject(err);
-//             resolve(token);
-//         })
-//     })
-// }
-
-// UserSchema.methods.stringify = function() {
-//     const responseUser = {
-//         login: this.login,
-//         name: this.name,
-//         email: this.email,
-//         creationDate: this.creationDate,
-//         lastLoginDate: this.lastLoginDate
-//     }
-//     return JSON.stringify(responseUser);  
-// }
-
-// UserSchema.statics.verifyAndGetUserByToken = async function(token) {
-//     let decoded;
-//     const decodedPromise = new Promise((resolve, reject) => {
-//         jwt.verify(token, secretKey, (err, decoded) => {
-//             if (err) reject(err);
-//             resolve(decoded);
-//         })
-//     })
-//     try {
-//         decoded = await decodedPromise;
-//     } catch(e) {
-//         console.log("Provided token is invalid!");
-//         return null;
-//     }
-    
-//     return await this.findByLogin(decoded?.login);
-// }
