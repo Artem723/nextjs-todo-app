@@ -1,4 +1,5 @@
 import logger from "./logger/index.mjs";
+import mongoose from "mongoose";
 
 export function placeUserData(req, res, next) {
     const token = req.cookies?.token;
@@ -9,7 +10,7 @@ export function placeUserData(req, res, next) {
     }
     let payload = null;
     try {
-        payload = JSON.parse(atob(token.split('.')[0]));
+        payload = JSON.parse(atob(token.split('.')[1]));
         if (!payload.id) {
             logger.error(`JWT payload doesn't contain user ID. payload: ${JSON.stringify(payload)}`);
             res.status(401).end("Unauthorized!");

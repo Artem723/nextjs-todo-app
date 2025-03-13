@@ -36,7 +36,7 @@ const TaskActivitySchema = new Schema({
 
     },
     userRef: {
-        type: Schema.Type.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true,
         immutable: true,
 

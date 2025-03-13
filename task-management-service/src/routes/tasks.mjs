@@ -28,7 +28,7 @@ tasksRouter.post('/tasks', placeUserData, async (req, res, next) => {
     }
 })
 
-tasksRouter.get('/tasks', placeUserData, async (req, res) => {
+tasksRouter.get('/tasks', placeUserData, async (req, res, next) => {
     const { userId } = res.locals;
     try {
         const tasks = await TaskModel.getTasksByUserId(userId, req.query);
@@ -40,12 +40,12 @@ tasksRouter.get('/tasks', placeUserData, async (req, res) => {
 
 
 
-tasksRouter.get('/tasks/:id', placeUserData, async (req, res) => {
+tasksRouter.get('/tasks/:id', placeUserData, async (req, res, next) => {
     const { userId } = res.locals;
     const taskId = req.params.id;
     let task = null;
     try {
-        task = await task.getOneTaskByIdAndUserId(taskId, userId);
+        task = await TaskModel.getOneTaskByIdAndUserId(taskId, userId);
     } catch (err) {
         logger.error(`Cannot retrieve task from DB. userId: ${userId}; taskId: ${taskId} `)
         next(err);
@@ -60,7 +60,7 @@ tasksRouter.get('/tasks/:id', placeUserData, async (req, res) => {
     } 
 })
 
-tasksRouter.get('/tasks/:id/activity', async (req, res) => {
+tasksRouter.get('/tasks/:id/activity', async (req, res, next) => {
     const { userId } = res.locals;
     const taskId = req.params.id;
 
@@ -72,12 +72,12 @@ tasksRouter.get('/tasks/:id/activity', async (req, res) => {
     }
 })
 
-tasksRouter.post('/task/:id/setStatus', placeUserData, async (req, res) => {
+tasksRouter.post('/task/:id/setStatus', placeUserData, async (req, res, next) => {
     const { userId } = res.locals;
     const taskId = req.params.id;
 
     try {
-        const task = await task.getOneTaskByIdAndUserId(taskId, userId);
+        const task = await TaskModel.getOneTaskByIdAndUserId(taskId, userId);
         await task.setStatusAndSave(req.query.status, req.query.note)
     } catch (err) {
         // logger.error(`Cannot retrieve task from DB. userId: ${userId}; taskId: ${taskId} `)
@@ -86,7 +86,7 @@ tasksRouter.post('/task/:id/setStatus', placeUserData, async (req, res) => {
     }
 })
 
-tasksRouter.patch('/task/:id', placeUserData, async (req, res) => {
+tasksRouter.patch('/task/:id', placeUserData, async (req, res, next) => {
     const { userId } = res.locals;
     const taskId = req.params.id;
     
@@ -124,7 +124,7 @@ tasksRouter.patch('/task/:id', placeUserData, async (req, res) => {
 
 })
 
-tasksRouter.delete('/task/:id', placeUserData, async (req, res) => {
+tasksRouter.delete('/task/:id', placeUserData, async (req, res, next) => {
     const { userId } = res.locals;
     const taskId = req.params.id;
     let task = null;

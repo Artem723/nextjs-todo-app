@@ -3,6 +3,7 @@ import { requestErrorHandler } from './middlewares.mjs';
 import cookieParser from 'cookie-parser';
 import tasksRouter from './routes/tasks.mjs';
 import logger from './logger/index.mjs';
+import bodyParser from 'body-parser';
 const PORT = 80;
 
 const app = express();
@@ -16,3 +17,4 @@ app.use(requestErrorHandler)
 app.listen(PORT, () => {
     logger.info(`Service has been started. Listening on port ${PORT}`)
 })
+

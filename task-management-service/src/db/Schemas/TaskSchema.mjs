@@ -5,7 +5,8 @@ import { REPEATED_ACTIVITY,
     STATUS_OPEN,
     STATUS_IN_PROGRESS,
     STATUS_COMPLETED,
-    STATUS_PAUSED
+    STATUS_PAUSED,
+    TASK_COLOR_DEFAULT
 } from './constants.mjs';
 import TaskFiltersValModel from '../Models/TaskFiltersValModel.mjs';
 import TaskActivity from '../Models/TaskActivityModel.mjs';
@@ -51,7 +52,7 @@ const TaskSchema = new Schema({
         type: Date,
     },
     activity: {
-        type: Schema.Type.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'TaskActivity'
     },
     // userLogin: {
@@ -61,7 +62,7 @@ const TaskSchema = new Schema({
         // some user fields if needed
     // },
     userRef: {
-        type: Schema.Type.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true,
         immutable: true,
         
