@@ -12,3 +12,5 @@ COPY . .
 EXPOSE 80
 
 CMD [ "npm", "run", "dev" ]
+# OR CMD ["npm", "run", "prod"]
+# 

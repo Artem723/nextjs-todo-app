@@ -22,12 +22,14 @@ services:
       AUTH_SECRET_KEY_FILE: /run/secrets/auth-secret-key
     volumes:
       - ./user-service/src:/usr/src/app/src
-    ports:
-      - 4000:80
+    # ports:
+    #   - 4000:80
     secrets:
       - mongo-db-username
       - mongo-db-password
       - auth-secret-key
+    expose:
+     - 80 
   task-management-service:
     build: ./task-management-service
     restart: always
