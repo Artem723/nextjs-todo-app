@@ -72,9 +72,18 @@ tasksRouter.get('/tasks/:id/activity', async (req, res) => {
     }
 })
 
-tasksRouter.post('/task/:id/setStatus', placeUserData, (req, res) => {
-    
-    throw new Error('Not implemented!');
+tasksRouter.post('/task/:id/setStatus', placeUserData, async (req, res) => {
+    const { userId } = res.locals;
+    const taskId = req.params.id;
+
+    try {
+        const task = await task.getOneTaskByIdAndUserId(taskId, userId);
+        await task.setStatusAndSave(req.query.status, req.query.note)
+    } catch (err) {
+        // logger.error(`Cannot retrieve task from DB. userId: ${userId}; taskId: ${taskId} `)
+        next(err);
+
+    }
 })
 
 tasksRouter.patch('/task/:id', placeUserData, async (req, res) => {
@@ -113,7 +122,6 @@ tasksRouter.patch('/task/:id', placeUserData, async (req, res) => {
     }
 
 
-    throw new Error('Not implemented!');
 })
 
 tasksRouter.delete('/task/:id', placeUserData, async (req, res) => {

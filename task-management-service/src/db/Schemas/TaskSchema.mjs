@@ -1,7 +1,14 @@
 import logger from '../../logger/index.mjs';
 import { Schema } from 'mongoose';
-import { REPEATED_ACTIVITY, STATUS, STATUS_OPEN } from './constants.mjs';
+import { REPEATED_ACTIVITY,
+    STATUS,
+    STATUS_OPEN,
+    STATUS_IN_PROGRESS,
+    STATUS_COMPLETED,
+    STATUS_PAUSED
+} from './constants.mjs';
 import TaskFiltersValModel from '../Models/TaskFiltersValModel.mjs';
+import TaskActivity from '../Models/TaskActivityModel.mjs';
 
 const TaskSchema = new Schema({
     title: {
@@ -67,6 +74,34 @@ const TaskSchema = new Schema({
 })
 
 TaskSchema.path('title').index({text: true});
+
+TaskSchema.methods.setStatusAndSave = async function(newStatus, note) {
+    const taskActivity = new TaskActivity();
+    
+    taskActivity.note = note;
+    taskActivity.taskRef = this._id;
+    taskActivity.userRef = this.userRef;
+    taskActivity.prevStatus = this.status;
+    taskActivity.newStatus = newStatus;
+
+    this.status = newStatus;
+
+    switch (newStatus) {
+        case STATUS_OPEN:
+        case STATUS_IN_PROGRESS:
+        case STATUS_PAUSED:
+            break;
+        case STATUS_COMPLETED:
+            taskActivity.performedAt = Date.now();
+            break;
+        default:
+            logger.debug(`Provided an unknown status ${newStatus}`)
+            this.invalidate('status', 'Unknown status', newStatus);
+            return this;
+    }
+    await Promise.all(taskActivity.save(), this.save());
+    return this;
+}
 
 TaskSchema.statics.getOneTaskByIdAndUserId = async function(taskId, userId) {
     if (!taskId || !userId) {

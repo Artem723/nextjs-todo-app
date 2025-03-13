@@ -34,7 +34,7 @@ export function requestErrorHandler(err, req, res, next) {
         logger.error(`Internal error: ${err.message}`)
         logger.error(err);
         
-        // pass to default handler
+        // pass to the default handler
         next(err)
     }
 }

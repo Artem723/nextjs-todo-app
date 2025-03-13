@@ -28,6 +28,21 @@ services:
       - mongo-db-username
       - mongo-db-password
       - auth-secret-key
+  task-management-service:
+    build: ./task-management-service
+    restart: always
+    environment:
+      DB_HOST: mongo
+      DB_PORT: 27017
+      DB_USERNAME_FILE: /run/secrets/mongo-db-username
+      DB_PASSWORD_FILE: /run/secrets/mongo-db-password
+    volumes:
+      - ./task-management-service/src:/usr/src/app/src
+    secrets:
+      - mongo-db-username
+      - mongo-db-password
+    expose:
+      - 80
   mongo:
     image: mongo:6.0.3
     restart: always
@@ -53,7 +68,7 @@ services:
       ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
       ME_CONFIG_BASICAUTH: true
       ME_CONFIG_BASICAUTH_USERNAME: admin
-      ME_CONFIG_BASICAUTH_PASSWORD: example
+      ME_CONFIG_BASICAUTH_PASSWORD: my_password
       ME_CONFIG_MONGODB_ENABLE_ADMIN: true
 
 secrets:

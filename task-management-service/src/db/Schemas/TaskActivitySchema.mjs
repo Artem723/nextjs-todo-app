@@ -26,7 +26,7 @@ const TaskActivitySchema = new Schema({
         type: String,
         enum: STATUS
     },
-    updatedAt: { //TODO: check, mb redundant
+    updatedAt: { //TODO: check, mb redundant bc there are timestamps anyway
         type: Date,
     },
     userLogin: {
