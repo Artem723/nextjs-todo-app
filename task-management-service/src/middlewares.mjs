@@ -16,7 +16,7 @@ export function placeUserData(req, res, next) {
             res.status(401).end("Unauthorized!");
             return;
         }
-        res.locals.userID = payload.id;
+        res.locals.userId = payload.id;
         next();    
     } catch(e) {
         logger.error(e);
