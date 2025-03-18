@@ -100,7 +100,7 @@ TaskSchema.methods.setStatusAndSave = async function(newStatus, note) {
             this.invalidate('status', 'Unknown status', newStatus);
             return this;
     }
-    await Promise.all(taskActivity.save(), this.save());
+    await Promise.all([taskActivity.save(), this.save()]);
     return this;
 }
 
@@ -110,7 +110,7 @@ TaskSchema.statics.getOneTaskByIdAndUserId = async function(taskId, userId) {
         return null;
     }
     const task = await this.findById(taskId);
-    if (task?.userRef !== userId) {
+    if (task?.userRef?.toString() !== userId) {
         logger.debug(`Task with ${taskId} was not found for user ${userId}.`);
         return null;
     }

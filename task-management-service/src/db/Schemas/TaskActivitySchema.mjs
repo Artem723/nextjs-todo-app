@@ -29,17 +29,10 @@ const TaskActivitySchema = new Schema({
     updatedAt: { //TODO: check, mb redundant bc there are timestamps anyway
         type: Date,
     },
-    userLogin: {
-        type: String,
-        required: true,
-        immutable: true,
-
-    },
     userRef: {
         type: Schema.Types.ObjectId,
         required: true,
         immutable: true,
-
     }
 }, {
     timestamps: true
@@ -61,7 +54,7 @@ TaskActivitySchema.statics.getActivityListForTaskId = async function (taskId, us
         taskRef: taskId,
         userRef: userId
     });
-    
+    console.log(query)
     if (filters) {
         await validateTaskActivityFilters(filters);
         if (filters?.newStatus) query = query.where('newStatus').eq(filters.newStatus);
