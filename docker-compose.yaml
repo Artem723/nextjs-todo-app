@@ -5,12 +5,14 @@ services:
     ports:
       - 3030:80
   frontend:
-    build: ./frontend
+    build: 
+      context: ./frontend
+      target: prod
     restart: always
     # ports:
     #   - 3040:3000
-    volumes:
-      - ./frontend/src:/usr/src/app/src
+    # volumes:
+    #   - ./frontend/app:/usr/src/app
   user-service:
     build: ./user-service
     restart: always
