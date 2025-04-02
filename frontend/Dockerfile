@@ -16,6 +16,7 @@ FROM base AS dev
 WORKDIR /usr/src/app
 COPY --from=base /usr/src/app/node_modules ./node_modules
 COPY app/ .
+RUN npm install --only=dev
 
 ENV NEXT_TELEMETRY_DISABLED=1
 

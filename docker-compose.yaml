@@ -8,10 +8,11 @@ services:
     build: 
       context: ./frontend
       target: dev
-    restart: always
+    # restart: always
     # ports:
     #   - 3040:3000
     volumes:
+      - /usr/src/app/node_modules
       - ./frontend/app:/usr/src/app
   user-service:
     build: ./user-service
@@ -85,4 +86,5 @@ secrets:
 
 volumes:
   user-mongodb:
+  frontend_node_modules:
     
