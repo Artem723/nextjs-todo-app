@@ -44,7 +44,7 @@ app.post('/users/register', async (req, res) => {
   }
 })
 
-app.get('/users/login', async (req, res) => {
+app.post('/users/login', async (req, res) => {
   console.log("Login request received");
   const login = req.body.login;
   const password = req.body.password;
