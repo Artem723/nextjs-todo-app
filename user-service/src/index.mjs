@@ -7,6 +7,7 @@ import requestLogger from './middlewares/requestLogger.mjs'
 import mongoose from './db/connection.mjs'
 import logger from './logger/index.mjs'
 import validationMessageFlatter from './utils/validationMessageFlatter.mjs'
+import errorResponseBody from './utils/errorResponseBody.mjs'
 
 export const app = express();
 const PORT = 80;
@@ -19,7 +20,9 @@ app.use(requestLogger);
 app.post('/users/register', async (req, res) => {
   const body = req.body;
   if (await User.findByLogin(body.login)) {
-    res.status(400).end(`Error: user ${body.login} already exists.`)
+    res.status(400).end(
+      JSON.stringify(errorResponseBody('User with the provided login already exists.', [{'login': `user ${body.login} already exists.`}]))
+    )
     return;
   }
   const user = new User();
@@ -35,9 +38,12 @@ app.post('/users/register', async (req, res) => {
     res.end('OK.');
   } catch (e) {
     if (e.errors) {
-      res.status(400).end(`Validation error: ${JSON.stringify(validationMessageFlatter(e.errors))}`);
+      // mongoose ValidationError
+      res.status(400).end(
+        JSON.stringify(errorResponseBody('Validation field Error. Please, check out the entered info.', validationMessageFlatter(e.errors)))
+      );
       return;
-    }
+    } 
     logger.error('Not possible to register a user. Internal error.')
     logger.error(e);
     res.status(500).end('Internal server error.');

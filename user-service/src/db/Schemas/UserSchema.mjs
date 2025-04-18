@@ -50,7 +50,8 @@ const UserSchema = new Schema({
 
 UserSchema.methods.setPassword = async function (plainPWD) {
     if (!validatePlainPWD(plainPWD))
-        throw new Error("Password should be at least 6 characters long containing letters and numbers!")
+        // throw new Error("Password should be at least 6 characters long containing letters and numbers!")
+        this.invalidate('password', 'Password should be at least 6 characters long containing letters and numbers!')
     
     this.hashedPWD = await bcrypt.hash(plainPWD, SALT_ROUNDS);
 }
