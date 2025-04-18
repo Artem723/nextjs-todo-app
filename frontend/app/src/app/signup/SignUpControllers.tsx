@@ -24,23 +24,14 @@ export default function SignUpControllers() {
                 <Form.Group className="mb-3" controlId="name">
                     <Form.Label>Name</Form.Label>
                     <Form.Control onChange={onChange} value={inputs.name} name="name" isInvalid={!!state} disabled={isPending} type="text" placeholder="Your name" />
-                    {/* <Form.Text className="text-muted">
-                        Your name
-                    </Form.Text> */}
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="email">
                     <Form.Label>Email</Form.Label>
                     <Form.Control onChange={onChange} value={inputs.email} name="email" isInvalid={!!state} disabled={isPending} type="email" placeholder="Your email" />
-                    {/* <Form.Text className="text-muted">
-                        Email address
-                    </Form.Text> */}
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="nickname">
                     <Form.Label>Email</Form.Label>
                     <Form.Control onChange={onChange} value={inputs.login} name="login" isInvalid={!!state} disabled={isPending} type="text" placeholder="Your Nickname" />
-                    {/* <Form.Text className="text-muted">
-                        Nickname
-                    </Form.Text> */}
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="password">
                     <Form.Label>Password</Form.Label>
